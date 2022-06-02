@@ -5,3 +5,4 @@ node_modules
 
 # Ignore all HTML files:
 *.html
+.env

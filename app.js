@@ -26,7 +26,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', require('@routes/index'));
-// app.use('/user', require('@routes/usersRouter'));
+app.use('/user', require('@routes/userRouter'));
 // app.use('/product', require('@routes/productRouter'));
 // app.use('/package', require('@routes/packageRouter'));
 // app.use('/pinned', require('@routes/pinnedRouter'));

@@ -70,8 +70,8 @@ module.exports = {
   },
   ROLE: {
     ADMIN: 1,
-    PROVIDER: 2,
-    STAFF: 3,
+    STAFF: 2,
+    CUSTOMER: 3,
   },
 
   ACTIVE: {

@@ -18,10 +18,6 @@ user.init(
       type: Sequelize.STRING(50),
       allowNull: false,
     },
-    phone: {
-      type: Sequelize.STRING(50),
-      allowNull: false,
-    },
     password: {
       type: Sequelize.STRING(100),
       allowNull: false,
@@ -38,6 +34,11 @@ user.init(
     },
     full_name: Sequelize.STRING(250),
     email: Sequelize.STRING(250),
+    address: {
+      type: Sequelize.STRING(250),
+      allowNull: true,
+      defaultValue: '',
+    },
     role_id: {
       type: Sequelize.INTEGER,
       allowNull: false,
@@ -46,6 +47,11 @@ user.init(
       type: Sequelize.STRING(500),
       allowNull: true,
       defaultValue: '',
+    },
+    status: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      defaultValue: 1,
     },
     is_active: {
       type: Sequelize.INTEGER,
@@ -57,7 +63,6 @@ user.init(
       allowNull: false,
       defaultValue: sequelize.literal('CURRENT_TIMESTAMP'),
     },
-    profile_image: Sequelize.TEXT,
   },
   {
     sequelize,
@@ -67,6 +72,42 @@ user.init(
   }
 );
 // khóa chính
-user.associate = (db) => {};
+user.associate = (db) => {
+  db.user.hasOne(db.user_info, {
+    foreignKey: {
+      name: 'user_id',
+    },
+  });
+
+  db.user.hasOne(db.customer_info, {
+    foreignKey: {
+      name: 'customer_id',
+    },
+  });
+
+  db.user.hasMany(db.order, {
+    foreignKey: {
+      name: 'sale_id',
+    },
+  });
+
+  db.user.hasMany(db.service_category, {
+    foreignKey: {
+      name: 'user_id',
+    },
+  });
+
+  db.user.hasMany(db.service, {
+    foreignKey: {
+      name: 'create_by',
+    },
+  });
+
+  db.user.belongsTo(db.role, {
+    foreignKey: {
+      name: 'role_id',
+    },
+  });
+};
 
 module.exports = () => user;
