@@ -1,6 +1,6 @@
-const { user } = require('@models/');
+const { user, user_info } = require('@models/');
 const bcrypt = require('bcrypt');
-const { ACTIVE, apiCode } = require('@src/utils/constant');
+const { ACTIVE, apiCode, ROLE } = require('@src/utils/constant');
 // const { verifyJWTToken } = require('@config/auth');
 const { createJWToken } = require('@config/auth');
 const { Sequelize } = require('@src/models');
@@ -67,8 +67,67 @@ async function logout({ auth }) {
   return true;
 }
 
+async function deleteUser({ id }) {
+  await user.update({ is_active: ACTIVE.INACTIVE }, { where: { id } });
+  return true;
+}
+
+async function listUser({ search, page, offset, limit, status }) {
+  const result = await user.findAll({ where: { full_name: { [Op.substring]: search } } });
+  return result;
+}
+
+async function register({ user_name, password, full_name, email, address, identify }) {
+  const userNameExists = await user.count({
+    where: {
+      user_name,
+      is_active: { [Op.ne]: ACTIVE.INACTIVE },
+    },
+  });
+  const emailExists = await user.count({ where: { email, is_active: { [Op.ne]: ACTIVE.INACTIVE } } });
+  if (emailExists) {
+    throw apiCode.EMAIL_EXIST;
+  }
+  if (userNameExists) {
+    throw apiCode.ACCOUNT_EXIST;
+  }
+  const pass = await generatePassword(password);
+  const id = await sequelize.transaction(async (transaction) => {
+    const createCustomer = await user.create(
+      {
+        user_name,
+        password: pass,
+        full_name,
+        email,
+        address,
+        role_id: ROLE.CUSTOMER,
+      },
+      { transaction }
+    );
+    await user_info.create(
+      {
+        user_id: createCustomer.id,
+        profile_image: '',
+        identify,
+      },
+      { transaction }
+    );
+    return createCustomer.id;
+  });
+  return id;
+}
+
+async function forgetPassword({ new_password, user_name }) {
+  const pass = await generatePassword(new_password);
+  await user.update({ password: pass }, { where: { user_name } });
+  return true;
+}
 module.exports = {
   createUser,
   login,
   logout,
+  deleteUser,
+  listUser,
+  register,
+  forgetPassword,
 };
