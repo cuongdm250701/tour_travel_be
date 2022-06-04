@@ -27,7 +27,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', require('@routes/index'));
 app.use('/user', require('@routes/userRouter'));
-// app.use('/product', require('@routes/productRouter'));
+app.use('/service_category', require('@routes/serviceCategoryRouter'));
 // app.use('/package', require('@routes/packageRouter'));
 // app.use('/pinned', require('@routes/pinnedRouter'));
 // app.use('/complain', require('@routes/complainRouter'));
