@@ -4,6 +4,11 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const compression = require('compression');
+const multer = require('multer');
+
+const upload = multer();
+
+// eslint-disable-next-line import/no-unresolved
 
 const app = express();
 
@@ -23,12 +28,13 @@ app.use(cors());
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use(cookieParser());
+app.use(upload.array());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', require('@routes/index'));
 app.use('/user', require('@routes/userRouter'));
 app.use('/service_category', require('@routes/serviceCategoryRouter'));
-// app.use('/package', require('@routes/packageRouter'));
+app.use('/service', require('@routes/serviceRouter'));
 // app.use('/pinned', require('@routes/pinnedRouter'));
 // app.use('/complain', require('@routes/complainRouter'));
 // app.use(Sentry.Handlers.errorHandler());

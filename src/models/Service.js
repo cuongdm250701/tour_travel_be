@@ -44,6 +44,11 @@ service.init(
       type: Sequelize.INTEGER,
       allowNull: false,
     },
+    is_active: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      defaultValue: 1,
+    },
   },
   {
     sequelize,
