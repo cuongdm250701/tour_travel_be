@@ -1,8 +1,8 @@
-const { service_category, service } = require('@models/');
+const { service_category, service, customer_like_service } = require('@models/');
 const { apiCode, ACTIVE } = require('@src/utils/constant');
 const { Sequelize } = require('@src/models');
 
-const { Op } = Sequelize;
+const { Op, col } = Sequelize;
 
 async function create({ name, service_category_id, people, content, address, schedule, contact_phone, create_by }) {
   const checkService = await service.findOne({ where: { name, is_active: ACTIVE.ACTIVE } });
@@ -63,9 +63,48 @@ async function list({ search, page, offset, limit }) {
   const listService = await service.findAll({ where: { name: { [Op.substring]: search }, is_active: ACTIVE.ACTIVE } });
   return listService;
 }
+
+async function customerLikeService({ service_id, customer_id }) {
+  const foundService = await service.findOne({ where: { id: service_id, is_active: ACTIVE.ACTIVE } });
+  if (!foundService) {
+    throw apiCode.NOT_FOUND;
+  }
+  const newCustomerLikeService = await customer_like_service.create({
+    customer_id,
+    service_id,
+  });
+  return newCustomerLikeService;
+}
+
+async function listCustomerLikeService({ customer_id }) {
+  const listService = await customer_like_service.findAll({
+    where: {
+      customer_id,
+    },
+    include: [
+      {
+        model: service,
+        attributes: [],
+      },
+    ],
+    attributes: {
+      include: [
+        [col('service.name'), 'name'],
+        [col('service.people'), 'people'],
+        [col('service.content'), 'content'],
+        [col('service.address'), 'address'],
+        [col('service.schedule'), 'schedule'],
+        [col('service.contact_phone'), 'contact_phone'],
+      ],
+    },
+  });
+  return listService;
+}
 module.exports = {
   create,
   update,
   deleteService,
   list,
+  customerLikeService,
+  listCustomerLikeService,
 };

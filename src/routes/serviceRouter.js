@@ -26,6 +26,18 @@ router
     [middleware.authorizeMiddleware([ROLE.ADMIN])],
     ResponeDelete(serviceController.deleteService)
   )
-  .get('/list', authen.isAuthenticated, middleware.pagingMiddleware(), ResponeGet(serviceController.list));
+  .get('/list', authen.isAuthenticated, middleware.pagingMiddleware(), ResponeGet(serviceController.list))
+  .post(
+    '/customer-like-service/:service_id',
+    authen.isAuthenticated,
+    [middleware.authorizeMiddleware([ROLE.CUSTOMER])],
+    ResponeCreateOrUpdate(serviceController.customerLikeService)
+  )
+  .get(
+    '/list-customer-like-service',
+    authen.isAuthenticated,
+    [middleware.authorizeMiddleware([ROLE.CUSTOMER])],
+    ResponeGet(serviceController.listCustomerLikeService)
+  );
 
 module.exports = router;

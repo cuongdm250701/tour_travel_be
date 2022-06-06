@@ -32,6 +32,7 @@ customer_info.init(
     },
     point: {
       type: Sequelize.FLOAT,
+      defaultValue: 0,
     },
     created_at: {
       type: Sequelize.DATE,

@@ -75,9 +75,24 @@ async function list(req, res) {
     limit,
   });
 }
+
+async function customerLikeService(req, res) {
+  const { auth } = req;
+  const { service_id } = req.params;
+  const customer_id = auth.dataValues.customer_info.id;
+  return seviceServer.customerLikeService({ service_id, customer_id });
+}
+
+async function listCustomerLikeService(req, res) {
+  const { auth } = req;
+  const customer_id = auth.dataValues.customer_info.id;
+  return seviceServer.listCustomerLikeService({ customer_id });
+}
 module.exports = {
   create,
   update,
   deleteService,
   list,
+  customerLikeService,
+  listCustomerLikeService,
 };

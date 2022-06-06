@@ -1,4 +1,4 @@
-const { user, user_info } = require('@models/');
+const { user, user_info, customer_info } = require('@models/');
 const bcrypt = require('bcrypt');
 const { ACTIVE, apiCode, ROLE } = require('@src/utils/constant');
 // const { verifyJWTToken } = require('@config/auth');
@@ -109,6 +109,14 @@ async function register({ user_name, password, full_name, email, address, identi
         user_id: createCustomer.id,
         profile_image: '',
         identify,
+      },
+      { transaction }
+    );
+    await customer_info.create(
+      {
+        customer_id: createCustomer.id,
+        gender: 1,
+        address,
       },
       { transaction }
     );
