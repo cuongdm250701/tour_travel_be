@@ -59,7 +59,9 @@ async function login({ user_name, password }) {
   }
   const token = await generateToken(foundUser.user_name, foundUser.id);
   await user.update({ token }, { where: { id: foundUser.id } });
-  return true;
+  return {
+    accessToken: token,
+  };
 }
 
 async function logout({ auth }) {

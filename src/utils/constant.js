@@ -96,4 +96,13 @@ module.exports = {
     ACCEPTED: 2,
     REJECT: 3,
   },
+
+  PAYMENT_STATUS: {
+    DEPOSITED: 1,
+    PAID: 2,
+  },
+  DF_ORDER_TRANSACTION_TYPE: {
+    PAY_DOWN: 1,
+    TRANSFER: 2,
+  },
 };

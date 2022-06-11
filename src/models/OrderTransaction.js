@@ -24,10 +24,6 @@ order_transaction.init(
       type: Sequelize.INTEGER,
       allowNull: false,
     },
-    price: {
-      type: Sequelize.BIGINT,
-      allowNull: false,
-    },
     amount: {
       type: Sequelize.BIGINT,
       allowNull: false,

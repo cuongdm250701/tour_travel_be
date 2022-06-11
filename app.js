@@ -35,7 +35,7 @@ app.use('/', require('@routes/index'));
 app.use('/user', require('@routes/userRouter'));
 app.use('/service_category', require('@routes/serviceCategoryRouter'));
 app.use('/service', require('@routes/serviceRouter'));
-// app.use('/pinned', require('@routes/pinnedRouter'));
+app.use('/order', require('@routes/orderRouter'));
 // app.use('/complain', require('@routes/complainRouter'));
 // app.use(Sentry.Handlers.errorHandler());
 
