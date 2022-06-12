@@ -1,4 +1,4 @@
-const { service_category, service, customer_like_service } = require('@models/');
+const { service_category, service, customer_like_service, service_image } = require('@models/');
 const { apiCode, ACTIVE } = require('@src/utils/constant');
 const { Sequelize } = require('@src/models');
 
@@ -60,7 +60,18 @@ async function deleteService({ id }) {
 }
 
 async function list({ search, page, offset, limit }) {
-  const listService = await service.findAll({ where: { name: { [Op.substring]: search }, is_active: ACTIVE.ACTIVE } });
+  const listService = await service.findAll({
+    where: { name: { [Op.substring]: search }, is_active: ACTIVE.ACTIVE },
+    include: [
+      {
+        model: service_image,
+        attributes: [],
+      },
+    ],
+    attributes: {
+      include: [[col('service_images.path'), 'path']],
+    },
+  });
   return listService;
 }
 
