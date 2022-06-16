@@ -59,9 +59,15 @@ async function deleteService({ id }) {
   return true;
 }
 
-async function list({ search, page, offset, limit }) {
+async function list({ search, page, offset, limit, service_category_id }) {
   const listService = await service.findAll({
-    where: { name: { [Op.substring]: search }, is_active: ACTIVE.ACTIVE },
+    where: {
+      [Op.and]: [
+        { name: { [Op.substring]: search } },
+        { service_category_id: service_category_id || { [Op.ne]: null } },
+      ],
+      is_active: ACTIVE.ACTIVE,
+    },
     include: [
       {
         model: service_image,
@@ -111,6 +117,26 @@ async function listCustomerLikeService({ customer_id }) {
   });
   return listService;
 }
+
+async function detail({ service_id }) {
+  const foundService = await service.findOne({ where: { id: service_id, is_active: ACTIVE.ACTIVE } });
+  if (!foundService) {
+    throw apiCode.NOT_FOUND;
+  }
+  const data = await service.findOne({
+    where: {
+      id: service_id,
+      is_active: ACTIVE.ACTIVE,
+    },
+    include: [
+      {
+        model: service_image,
+        attributes: ['path'],
+      },
+    ],
+  });
+  return data;
+}
 module.exports = {
   create,
   update,
@@ -118,4 +144,5 @@ module.exports = {
   list,
   customerLikeService,
   listCustomerLikeService,
+  detail,
 };

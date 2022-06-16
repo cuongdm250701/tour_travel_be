@@ -28,8 +28,8 @@ router
   )
   .get(
     '/list',
-    authen.isAuthenticated,
-    [middleware.authorizeMiddleware([ROLE.ADMIN, ROLE.CUSTOMER, ROLE.STAFF]), middleware.pagingMiddleware()],
+    // authen.isAuthenticated,
+    // [middleware.authorizeMiddleware([ROLE.ADMIN, ROLE.CUSTOMER, ROLE.STAFF]), middleware.pagingMiddleware()],
     ResponeGet(serviceCategoryController.list)
   );
 

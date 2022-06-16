@@ -67,12 +67,14 @@ async function deleteService(req, res) {
 }
 
 async function list(req, res) {
-  const { search = '', page = 1, offset, limit = config.PAGING_LIMIT } = req.query;
+  const { search = '', page = 1, offset, limit = config.PAGING_LIMIT, service_category_id } = req.query;
+  console.log('service_category_id', service_category_id);
   return seviceServer.list({
     search,
     page,
     offset,
     limit,
+    service_category_id,
   });
 }
 
@@ -88,6 +90,11 @@ async function listCustomerLikeService(req, res) {
   const customer_id = auth.dataValues.customer_info.id;
   return seviceServer.listCustomerLikeService({ customer_id });
 }
+
+async function detail(req, res) {
+  const { service_id } = req.params;
+  return seviceServer.detail({ service_id });
+}
 module.exports = {
   create,
   update,
@@ -95,4 +102,5 @@ module.exports = {
   list,
   customerLikeService,
   listCustomerLikeService,
+  detail,
 };
