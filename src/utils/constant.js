@@ -55,9 +55,9 @@ module.exports = {
   },
 
   restfullApiCode: {
-    GET_SUCCESS: { code: 1, status: 200, message: 'Thành công' },
-    CREATED_SUCCESS: { code: 1, status: 201, message: 'Thành công' },
-    DELETED_SUCCESS: { code: 1, status: 204, message: 'Xoá thành công' },
+    GET_SUCCESS: { code: 1, status: 1, message: 'Thành công' },
+    CREATED_SUCCESS: { code: 1, status: 1, message: 'Thành công' },
+    DELETED_SUCCESS: { code: 1, status: 1, message: 'Xoá thành công' },
   },
 
   config: {

@@ -60,7 +60,8 @@ async function login({ user_name, password }) {
   const token = await generateToken(foundUser.user_name, foundUser.id);
   await user.update({ token }, { where: { id: foundUser.id } });
   return {
-    accessToken: token,
+    role_id: foundUser.role_id,
+    token,
   };
 }
 
@@ -75,7 +76,7 @@ async function deleteUser({ id }) {
 }
 
 async function listUser({ search, page, offset, limit, status }) {
-  const result = await user.findAll({ where: { full_name: { [Op.substring]: search } } });
+  const result = await user.findAll({ where: { full_name: { [Op.substring]: search }, is_active: ACTIVE.ACTIVE } });
   return result;
 }
 
@@ -132,6 +133,17 @@ async function forgetPassword({ new_password, user_name }) {
   await user.update({ password: pass }, { where: { user_name } });
   return true;
 }
+
+async function getDetail({ token }) {
+  const foundUser = await user.findOne({
+    where: { token },
+    include: {
+      model: customer_info,
+      required: true,
+    },
+  });
+  return foundUser;
+}
 module.exports = {
   createUser,
   login,
@@ -140,4 +152,5 @@ module.exports = {
   listUser,
   register,
   forgetPassword,
+  getDetail,
 };

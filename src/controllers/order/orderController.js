@@ -7,26 +7,32 @@ async function create(req, res) {
     .keys({
       service_id: Joi.number().required().error(apiCode.INVALID_PARAM.errorInvalidParam('service_id')),
       amount_people: Joi.number().required().error(apiCode.INVALID_PARAM.errorInvalidParam('amount_people')),
-      amount_depoisited: Joi.number().required().error(apiCode.INVALID_PARAM.errorInvalidParam('amount_depoisited')),
+      price: Joi.number().required().error(apiCode.INVALID_PARAM.errorInvalidParam('price')),
     })
     .unknown(true);
   const { auth } = req;
-  const { service_id, amount_people, amount_depoisited, note } = await schema.validateAsync(req.body);
+  // eslint-disable-next-line operator-linebreak
+  const { service_id, amount_people, note, checkin_at, checkin_out, price, adult, children } =
+    await schema.validateAsync(req.body);
   const customer_id = auth.dataValues.customer_info.id;
+
   const customer_name = auth.full_name;
   const customer_phone = auth.user_name;
   const customer_address = auth.address;
-  const checkin_at = new Date();
+
   return orderServer.create({
     service_id,
     amount_people,
-    amount_depoisited,
     customer_id,
     customer_name,
     customer_phone,
     customer_address,
     checkin_at,
     note,
+    checkin_out,
+    price,
+    adult,
+    children,
   });
 }
 

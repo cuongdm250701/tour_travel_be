@@ -39,6 +39,6 @@ router
     [middleware.authorizeMiddleware([ROLE.CUSTOMER])],
     ResponeGet(serviceController.listCustomerLikeService)
   )
-  .get('/detail/:service_id', ResponeGet(serviceController.detail));
+  .get('/detail', ResponeGet(serviceController.detail));
 
 module.exports = router;

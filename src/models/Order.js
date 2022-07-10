@@ -30,6 +30,16 @@ order.init(
       allowNull: false,
       defaultValue: 1,
     },
+    adult: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+    },
+    children: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+    },
     note: Sequelize.TEXT,
     status: {
       type: Sequelize.INTEGER,

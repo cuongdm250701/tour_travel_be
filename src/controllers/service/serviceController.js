@@ -68,7 +68,7 @@ async function deleteService(req, res) {
 
 async function list(req, res) {
   const { search = '', page = 1, offset, limit = config.PAGING_LIMIT, service_category_id } = req.query;
-  console.log('service_category_id', service_category_id);
+  console.log('ddax va9f day', service_category_id);
   return seviceServer.list({
     search,
     page,
@@ -92,7 +92,8 @@ async function listCustomerLikeService(req, res) {
 }
 
 async function detail(req, res) {
-  const { service_id } = req.params;
+  const { id } = req.query;
+  const service_id = id;
   return seviceServer.detail({ service_id });
 }
 module.exports = {

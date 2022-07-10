@@ -18,6 +18,7 @@ router
     ResponeGet(userController.listUser)
   )
   .post('/register', ResponeCreateOrUpdate(userController.register))
-  .put('/forgetPassword', ResponeCreateOrUpdate(userController.forgetPassword));
+  .put('/forgetPassword', ResponeCreateOrUpdate(userController.forgetPassword))
+  .get('/userInfo', authen.isAuthenticated, ResponeGet(userController.getDetail));
 
 module.exports = router;

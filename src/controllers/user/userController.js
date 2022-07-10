@@ -85,6 +85,12 @@ async function forgetPassword(req, res) {
   return userServer.forgetPassword({ new_password, user_name });
 }
 
+async function getDetail(req, res) {
+  const { auth } = req;
+  const { token } = auth;
+  return userServer.getDetail({ token });
+}
+
 module.exports = {
   createUser,
   login,
@@ -93,4 +99,5 @@ module.exports = {
   listUser,
   register,
   forgetPassword,
+  getDetail,
 };

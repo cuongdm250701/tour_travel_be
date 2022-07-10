@@ -7,13 +7,16 @@ const { ACTIVE, apiCode, PAYMENT_STATUS, DF_ORDER_TRANSACTION_TYPE } = require('
 async function create({
   service_id,
   amount_people,
-  amount_depoisited,
   customer_id,
   customer_name,
   customer_phone,
   customer_address,
   checkin_at,
   note,
+  checkin_out,
+  price,
+  adult,
+  children,
 }) {
   const foundService = await service.findOne({ where: { id: service_id, is_active: ACTIVE.ACTIVE } });
   if (!foundService) {
@@ -23,6 +26,8 @@ async function create({
   const id = sequelize.transaction(async (transaction) => {
     const createTour = await order.create(
       {
+        adult,
+        children,
         service_id,
         customer_id,
         amount_people,
@@ -32,6 +37,9 @@ async function create({
         customer_phone,
         customer_address,
         code,
+        sale_id: 2,
+        price,
+        checkin_out,
         payment_status: PAYMENT_STATUS.DEPOSITED,
       },
       { transaction }
@@ -40,7 +48,7 @@ async function create({
       {
         order_id: createTour.id,
         df_order_transaction_tupe_id: DF_ORDER_TRANSACTION_TYPE.TRANSFER,
-        amount: amount_depoisited,
+        amount: 100000000,
         image_confirm: 'đã tải ảnh chuyển khoản',
       },
       { transaction }
