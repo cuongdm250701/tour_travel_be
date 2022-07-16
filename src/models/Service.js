@@ -25,7 +25,7 @@ service.init(
       allowNull: false,
     },
     content: {
-      type: Sequelize.STRING(250),
+      type: Sequelize.TEXT,
       allowNull: false,
     },
     address: {

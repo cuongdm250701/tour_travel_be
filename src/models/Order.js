@@ -1,3 +1,4 @@
+const { STATUS_TRANSACTION } = require('@src/utils/constant');
 const Sequelize = require('sequelize');
 
 const { Model } = Sequelize;
@@ -44,7 +45,7 @@ order.init(
     status: {
       type: Sequelize.INTEGER,
       allowNull: false,
-      defaultValue: 1,
+      defaultValue: STATUS_TRANSACTION.PENDING,
     },
     price: {
       type: Sequelize.BIGINT,

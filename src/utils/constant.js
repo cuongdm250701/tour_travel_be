@@ -61,7 +61,7 @@ module.exports = {
   },
 
   config: {
-    PAGING_LIMIT: 20,
+    PAGING_LIMIT: 6,
     FREE_DAY: 7,
   },
   PLATFORM: {

@@ -1,8 +1,8 @@
-const { service, order, order_transaction } = require('@models/');
+const { service, order, order_transaction, user } = require('@models/');
 const { Sequelize, sequelize } = require('@src/models');
 const { ACTIVE, apiCode, PAYMENT_STATUS, DF_ORDER_TRANSACTION_TYPE } = require('@src/utils/constant');
 
-// const { Op, col } = Sequelize;
+const { Op, col } = Sequelize;
 
 async function create({
   service_id,
@@ -49,7 +49,7 @@ async function create({
         order_id: createTour.id,
         df_order_transaction_tupe_id: DF_ORDER_TRANSACTION_TYPE.TRANSFER,
         amount: 100000000,
-        image_confirm: 'đã tải ảnh chuyển khoản',
+        // image_confirm: 'đã tải ảnh chuyển khoản',
       },
       { transaction }
     );
@@ -81,8 +81,86 @@ async function list({ search, page, offset, limit }) {
   return order.findAll({});
 }
 
+async function listHistory({ page, offset, limit, customer_id }) {
+  const { rows, count } = await order.findAndCountAll({
+    where: {
+      customer_id,
+      status: ACTIVE.ACTIVE,
+    },
+    include: [
+      {
+        model: order_transaction,
+        attributes: [],
+      },
+      {
+        model: service,
+        attributes: [],
+      },
+    ],
+    attributes: {
+      include: [
+        [col('order_transaction.df_order_transaction_tupe_id'), 'df_order_transaction_type_id'],
+
+        [col('service.name'), 'name'],
+        [col('service.address'), 'address'],
+      ],
+    },
+    limit,
+    offset,
+    order: [['id', 'desc']],
+  });
+  return {
+    data: rows,
+    pagging: {
+      page,
+      totalItemCount: count,
+      limit,
+    },
+  };
+}
+
+async function orderDetail({ order_id }) {
+  const foundOrder = await order.findOne({
+    where: { id: order_id, is_active: ACTIVE.ACTIVE },
+    include: [
+      {
+        model: service,
+        attributes: [],
+      },
+      {
+        model: user,
+        attributes: [],
+      },
+      {
+        model: order_transaction,
+        attributes: [],
+      },
+    ],
+    attributes: {
+      include: [
+        [col('service.name'), 'service_name'],
+        [col('order_transaction.image_confirm'), 'image_confirm'],
+        [col('service.address'), 'address'],
+        [col('user.full_name'), 'sale'],
+      ],
+    },
+  });
+  return foundOrder;
+}
+
+async function updateTransaction({ listPath, order_id }) {
+  const foundOrder = await order_transaction.findOne({ where: { order_id } });
+  if (!foundOrder) {
+    throw apiCode.NOT_FOUND;
+  }
+  await order_transaction.update({ image_confirm: listPath[0] }, { where: { order_id } });
+  return true;
+}
 module.exports = {
   create,
   update,
   list,
+  listHistory,
+  orderDetail,
+  updateTransaction,
 };

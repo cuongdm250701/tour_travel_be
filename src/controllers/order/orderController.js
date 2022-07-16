@@ -52,8 +52,36 @@ async function list(req, res) {
   return orderServer.list({ search, page, offset, limit });
 }
 
+async function listHistory(req, res) {
+  const { page = 1, offset, limit = config.PAGING_LIMIT } = req.query;
+  const { auth } = req;
+  const customer_id = auth.dataValues.customer_info.id;
+  return orderServer.listHistory({ page, offset, limit, customer_id });
+}
+
+async function orderDetail(req, res) {
+  const schema = Joi.object()
+    .keys({
+      order_id: Joi.number().required().error(apiCode.INVALID_PARAM.errorInvalidParam('order_id')),
+    })
+    .unknown(true);
+  const { order_id } = await schema.validateAsync(req.query);
+  return orderServer.orderDetail({ order_id });
+}
+
+async function updateTransaction(req, res) {
+  const { listPath, order_id } = req.body;
+  if (listPath.length == 0) {
+    throw apiCode.UPDATE_FAIL.withMessage('vui long gui anh');
+  }
+  return orderServer.updateTransaction({ order_id, listPath });
+}
+
 module.exports = {
   create,
   update,
   list,
+  listHistory,
+  orderDetail,
+  updateTransaction,
 };

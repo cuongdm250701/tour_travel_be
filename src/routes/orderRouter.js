@@ -25,6 +25,20 @@ router
     authen.isAuthenticated,
     [middleware.authorizeMiddleware([ROLE.ADMIN])],
     ResponeGet(orderController.list)
+  )
+  .get(
+    '/list-order-history',
+    authen.isAuthenticated,
+    [middleware.authorizeMiddleware([ROLE.CUSTOMER]), middleware.pagingMiddleware()],
+    ResponeGet(orderController.listHistory)
+  )
+  .get('/order-detail', authen.isAuthenticated, ResponeGet(orderController.orderDetail))
+  .put(
+    '/update-transaction',
+    middleware.mediaMiddleware,
+    authen.isAuthenticated,
+    [middleware.authorizeMiddleware([ROLE.CUSTOMER])],
+    ResponeCreateOrUpdate(orderController.updateTransaction)
   );
 
 module.exports = router;

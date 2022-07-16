@@ -4,9 +4,11 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const compression = require('compression');
-const multer = require('multer');
+const fileUpload = require('express-fileupload');
 
-const upload = multer();
+// const multer = require('multer');
+
+// const upload = multer();
 
 // eslint-disable-next-line import/no-unresolved
 
@@ -18,6 +20,7 @@ const app = express();
 /* [END] CRASHLYTICS */
 
 // view engine setup
+app.use(fileUpload());
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
@@ -28,7 +31,7 @@ app.use(cors());
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use(cookieParser());
-app.use(upload.array());
+// app.use(upload.array());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', require('@routes/index'));
