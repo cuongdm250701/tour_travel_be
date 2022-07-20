@@ -19,6 +19,9 @@ router
   )
   .post('/register', ResponeCreateOrUpdate(userController.register))
   .put('/forgetPassword', ResponeCreateOrUpdate(userController.forgetPassword))
-  .get('/userInfo', authen.isAuthenticated, ResponeGet(userController.getDetail));
+  .get('/userInfo', authen.isAuthenticated, ResponeGet(userController.getDetail))
+  .post('/register', ResponeCreateOrUpdate(userController.register))
+  .put('/changePassword', authen.isAuthenticated, ResponeCreateOrUpdate(userController.changePassword))
+  .put('/updateMe', middleware.mediaMiddleware, authen.isAuthenticated, ResponeCreateOrUpdate(userController.updateMe));
 
 module.exports = router;

@@ -5,7 +5,7 @@ const { ACTIVE, apiCode, ROLE } = require('@src/utils/constant');
 const { createJWToken } = require('@config/auth');
 const { Sequelize } = require('@src/models');
 
-const { Op } = Sequelize;
+const { Op, col } = Sequelize;
 const sequelize = require('@config/env');
 
 async function generatePassword(password) {
@@ -137,12 +137,74 @@ async function forgetPassword({ new_password, user_name }) {
 async function getDetail({ token }) {
   const foundUser = await user.findOne({
     where: { token },
-    include: {
-      model: customer_info,
-      required: true,
+    include: [
+      {
+        model: customer_info,
+        required: true,
+        attributes: [],
+      },
+      {
+        model: user_info,
+        required: true,
+        attributes: [],
+      },
+    ],
+    attributes: {
+      include: [
+        [col('user_info.profile_image'), 'profile_image'],
+        [col('customer_info.gender'), 'gender'],
+        [col('user_info.dob'), 'dob'],
+      ],
     },
   });
   return foundUser;
+}
+
+async function changePassword({ id, old_password, new_password }) {
+  const info = await user.findOne({ where: { id } });
+  const comparePass = await checkPassword(info, old_password);
+  if (!comparePass) {
+    throw apiCode.FAIL_CHANGE_PASS;
+  }
+  const newPass = await generatePassword(new_password);
+  await user.update({ password: newPass }, { where: { id } });
+  return true;
+}
+
+async function updateMe({ full_name, email, listPath, address, dob, gender, id }) {
+  const emailExists = await user.count({
+    where: { email, is_active: { [Op.ne]: ACTIVE.INACTIVE }, id: { [Op.ne]: id } },
+  });
+  if (emailExists) {
+    throw apiCode.EMAIL_EXIST;
+  }
+  await sequelize.transaction(async (transaction) => {
+    await user.update(
+      {
+        full_name,
+        email,
+        address,
+      },
+      {
+        where: { id },
+        transaction,
+      }
+    );
+    await user_info.update(
+      {
+        profile_image: listPath[0] ? listPath[0] : '',
+        dob,
+      },
+      { where: { user_id: id }, transaction }
+    );
+    await customer_info.update(
+      {
+        gender,
+      },
+      { where: { customer_id: id }, transaction }
+    );
+  });
+  return true;
 }
 module.exports = {
   createUser,
@@ -153,4 +215,6 @@ module.exports = {
   register,
   forgetPassword,
   getDetail,
+  changePassword,
+  updateMe,
 };

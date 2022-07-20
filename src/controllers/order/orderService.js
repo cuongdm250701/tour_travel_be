@@ -48,7 +48,7 @@ async function create({
       {
         order_id: createTour.id,
         df_order_transaction_tupe_id: DF_ORDER_TRANSACTION_TYPE.TRANSFER,
-        amount: 100000000,
+        amount: 1000000,
         // image_confirm: 'đã tải ảnh chuyển khoản',
       },
       { transaction }
@@ -142,6 +142,7 @@ async function orderDetail({ order_id }) {
         [col('order_transaction.image_confirm'), 'image_confirm'],
         [col('service.address'), 'address'],
         [col('user.full_name'), 'sale'],
+        [col('order_transaction.amount'), 'deposited'],
       ],
     },
   });

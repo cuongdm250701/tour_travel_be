@@ -91,6 +91,33 @@ async function getDetail(req, res) {
   return userServer.getDetail({ token });
 }
 
+async function changePassword(req, res) {
+  const schema = Joi.object()
+    .keys({
+      old_password: Joi.string().required().error(apiCode.INVALID_PARAM.errorInvalidParam('old_password')),
+      new_password: Joi.string().required().error(apiCode.INVALID_PARAM.errorInvalidParam('new_password')),
+    })
+    .unknown(true);
+  const { auth } = req;
+  const { id } = auth;
+  const { old_password, new_password } = await schema.validateAsync(req.body);
+  return userServer.changePassword({ id, old_password, new_password });
+}
+
+async function updateMe(req, res) {
+  const schema = Joi.object()
+    .keys({
+      full_name: Joi.string().required().error(apiCode.INVALID_PARAM.errorInvalidParam('full_name')),
+      email: Joi.string().required().error(apiCode.INVALID_PARAM.errorInvalidParam('email')),
+      dob: Joi.string().required().error(apiCode.INVALID_PARAM.errorInvalidParam('dob')),
+    })
+    .unknown(true);
+  const { full_name, email, listPath, address, dob, gender } = await schema.validateAsync(req.body);
+  const { auth } = req;
+  const { id } = auth;
+  return userServer.updateMe({ full_name, email, listPath, address, dob, gender, id });
+}
+
 module.exports = {
   createUser,
   login,
@@ -100,4 +127,6 @@ module.exports = {
   register,
   forgetPassword,
   getDetail,
+  changePassword,
+  updateMe,
 };

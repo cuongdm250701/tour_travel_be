@@ -24,6 +24,10 @@ user_info.init(
       allowNull: false,
       defaultValue: sequelize.literal('CURRENT_TIMESTAMP'),
     },
+    dob: {
+      type: Sequelize.DATE,
+      allowNull: true,
+    },
   },
   {
     sequelize,
