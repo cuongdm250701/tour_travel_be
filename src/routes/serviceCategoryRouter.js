@@ -21,7 +21,7 @@ router
     ResponeCreateOrUpdate(serviceCategoryController.update)
   )
   .delete(
-    '/delete/:id',
+    '/delete',
     authen.isAuthenticated,
     [middleware.authorizeMiddleware([ROLE.ADMIN])],
     ResponeDelete(serviceCategoryController.deleteCategory)

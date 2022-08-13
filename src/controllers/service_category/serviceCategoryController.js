@@ -28,7 +28,7 @@ async function update(req, res) {
 }
 
 async function deleteCategory(req, res) {
-  const { id } = req.params;
+  const { id } = req.body;
   return seviceCategoryServer.deleteCategory({ id });
 }
 

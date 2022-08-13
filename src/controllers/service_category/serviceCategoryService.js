@@ -1,8 +1,8 @@
-const { service_category, service } = require('@models/');
+const { service_category, service, user } = require('@models/');
 const { apiCode, ACTIVE } = require('@src/utils/constant');
 const { Sequelize } = require('@src/models');
 
-const { Op } = Sequelize;
+const { Op, col } = Sequelize;
 
 async function create({ name, image, user_id }) {
   const foundCategory = await service_category.findOne({
@@ -50,13 +50,32 @@ async function deleteCategory({ id }) {
 }
 
 async function list({ search, page, offset, limit }) {
-  const listCategory = await service_category.findAll({
+  const { rows, count } = await service_category.findAndCountAll({
     where: {
       name: { [Op.substring]: search },
       is_active: ACTIVE.ACTIVE,
     },
+    include: [
+      {
+        model: user,
+        attributes: [],
+      },
+    ],
+    attributes: {
+      include: [[col('user.full_name'), 'create_by']],
+    },
+    limit,
+    offset,
+    order: [['id', 'desc']],
   });
-  return listCategory;
+  return {
+    data: rows,
+    pagging: {
+      page,
+      totalItemCount: count,
+      limit,
+    },
+  };
 }
 
 module.exports = {

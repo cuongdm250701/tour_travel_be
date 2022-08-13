@@ -39,7 +39,7 @@ async function deleteUser(req, res) {
       id: Joi.number().required().error(apiCode.INVALID_PARAM.errorInvalidParam('id')),
     })
     .unknown(true);
-  const { id } = await schema.validateAsync(req.params);
+  const { id } = await schema.validateAsync(req.body);
   const { auth } = req;
   if (auth.id == id) {
     throw apiCode.DELETE_FAIL;

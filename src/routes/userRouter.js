@@ -11,7 +11,12 @@ router
   .post('/create', ResponeCreateOrUpdate(userController.createUser))
   .put('/login', ResponeCreateOrUpdate(userController.login))
   .put('/logout', authen.isAuthenticated, ResponeCreateOrUpdate(userController.logout))
-  .delete('/delete/:id', authen.isAuthenticated, ResponeDelete(userController.deleteUser))
+  .delete(
+    '/delete',
+    authen.isAuthenticated,
+    middleware.authorizeMiddleware([ROLE.ADMIN]),
+    ResponeDelete(userController.deleteUser)
+  )
   .get(
     '/list',
     [authen.isAuthenticated, middleware.pagingMiddleware(), middleware.authorizeMiddleware([ROLE.ADMIN])],

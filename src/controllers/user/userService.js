@@ -76,8 +76,24 @@ async function deleteUser({ id }) {
 }
 
 async function listUser({ search, page, offset, limit, status }) {
-  const result = await user.findAll({ where: { full_name: { [Op.substring]: search }, is_active: ACTIVE.ACTIVE } });
-  return result;
+  const { rows, count } = await user.findAndCountAll({
+    where: {
+      full_name: { [Op.substring]: search },
+      // is_active: ACTIVE.ACTIVE,
+      role_id: ROLE.CUSTOMER,
+    },
+    limit,
+    offset,
+    order: [['id', 'desc']],
+  });
+  return {
+    data: rows,
+    pagging: {
+      page,
+      totalItemCount: count,
+      limit,
+    },
+  };
 }
 
 async function register({ user_name, password, full_name, email, address, identify }) {
@@ -140,12 +156,12 @@ async function getDetail({ token }) {
     include: [
       {
         model: customer_info,
-        required: true,
+        // required: true,
         attributes: [],
       },
       {
         model: user_info,
-        required: true,
+        // required: true,
         attributes: [],
       },
     ],
