@@ -4,7 +4,7 @@ const { Sequelize } = require('@src/models');
 
 const { Op, col } = Sequelize;
 
-async function create({ name, image, user_id }) {
+async function create({ name, user_id }) {
   const foundCategory = await service_category.findOne({
     where: {
       name,
@@ -15,23 +15,22 @@ async function create({ name, image, user_id }) {
   }
   const newServiceCategory = await service_category.create({
     name,
-    image,
     user_id,
   });
   return newServiceCategory.id;
 }
 
-async function update({ name, image, user_id, id }) {
+async function update({ name, user_id, id }) {
   const foundCategory = await service_category.findOne({
     where: { name, id: { [Op.ne]: id } },
   });
+
   if (foundCategory) {
     throw apiCode.DATA_EXIST;
   }
   await service_category.update(
     {
       name,
-      image,
       user_id,
     },
     { where: { id } }
@@ -78,9 +77,29 @@ async function list({ search, page, offset, limit }) {
   };
 }
 
+async function detail({ id }) {
+  const foundCategory = await service_category.findOne({
+    where: { id, is_active: ACTIVE.ACTIVE },
+    include: [
+      {
+        model: user,
+        attributes: [],
+      },
+    ],
+    attributes: {
+      include: [[col('user.full_name'), 'create_by']],
+    },
+  });
+  if (!foundCategory) {
+    throw apiCode.NOT_FOUND;
+  }
+  return foundCategory;
+}
+
 module.exports = {
   create,
   update,
   deleteCategory,
   list,
+  detail,
 };

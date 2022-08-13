@@ -15,7 +15,7 @@ router
     ResponeCreateOrUpdate(serviceCategoryController.create)
   )
   .put(
-    '/update/:id',
+    '/update',
     authen.isAuthenticated,
     [middleware.authorizeMiddleware([ROLE.ADMIN])],
     ResponeCreateOrUpdate(serviceCategoryController.update)
@@ -31,6 +31,12 @@ router
     // authen.isAuthenticated,
     // [middleware.authorizeMiddleware([ROLE.ADMIN, ROLE.CUSTOMER, ROLE.STAFF]), middleware.pagingMiddleware()],
     ResponeGet(serviceCategoryController.list)
+  )
+  .get(
+    '/detail',
+    authen.isAuthenticated,
+    [middleware.authorizeMiddleware([ROLE.ADMIN])],
+    ResponeGet(serviceCategoryController.detail)
   );
 
 module.exports = router;
