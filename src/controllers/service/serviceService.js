@@ -60,7 +60,7 @@ async function deleteService({ id }) {
 }
 
 async function list({ search, page, offset, limit, service_category_id }) {
-  const listService = await service.findAll({
+  const { rows, count } = await service.findAndCountAll({
     where: {
       [Op.and]: [
         { name: { [Op.substring]: search } },
@@ -70,15 +70,26 @@ async function list({ search, page, offset, limit, service_category_id }) {
     },
     include: [
       {
-        model: service_image,
+        model: service_category,
         attributes: [],
       },
     ],
     attributes: {
-      include: [[col('service_images.path'), 'path']],
+      include: [[col('service_category.name'), 'category_name']],
     },
+    limit,
+    offset,
+    order: [['id', 'desc']],
+    subQuery: false,
   });
-  return listService;
+  return {
+    data: rows,
+    pagging: {
+      page,
+      totalItemCount: count,
+      limit,
+    },
+  };
 }
 
 async function customerLikeService({ service_id, customer_id }) {
@@ -133,7 +144,14 @@ async function detail({ service_id }) {
         model: service_image,
         attributes: ['path'],
       },
+      {
+        model: service_category,
+        attributes: [],
+      },
     ],
+    attributes: {
+      include: [[col('service_category.name'), 'category_name']],
+    },
   });
   return data;
 }

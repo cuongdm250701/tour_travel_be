@@ -49,7 +49,7 @@ async function update(req, res) {
   const { name, service_category_id, people, content, address, schedule, contact_phone } = await schema.validateAsync(
     req.body
   );
-  const { id } = req.params;
+  const { id } = req.body;
   return seviceServer.update({
     name,
     service_category_id,
@@ -68,7 +68,6 @@ async function deleteService(req, res) {
 
 async function list(req, res) {
   const { search = '', page = 1, offset, limit = config.PAGING_LIMIT, service_category_id } = req.query;
-  console.log('ddax va9f day', service_category_id);
   return seviceServer.list({
     search,
     page,

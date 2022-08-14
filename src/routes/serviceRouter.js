@@ -14,7 +14,7 @@ router
     ResponeCreateOrUpdate(serviceController.create)
   )
   .put(
-    '/update/:id',
+    '/update',
     authen.isAuthenticated,
     [middleware.authorizeMiddleware([ROLE.ADMIN])],
     ResponeCreateOrUpdate(serviceController.update)
