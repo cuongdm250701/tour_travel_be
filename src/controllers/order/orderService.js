@@ -58,13 +58,12 @@ async function create({
   return id;
 }
 
-async function update({ sale_id, price, status, response, id }) {
+async function update({ sale_id, status, response, id }) {
   await sequelize.transaction(async (transaction) => {
     await order.update(
       {
         sale_id,
         status,
-        price,
       },
       { where: { id }, transaction }
     );
@@ -78,14 +77,26 @@ async function update({ sale_id, price, status, response, id }) {
 }
 
 async function list({ search, page, offset, limit }) {
-  return order.findAll({});
+  const { rows, count } = await order.findAndCountAll({
+    limit,
+    offset,
+    order: [['id', 'desc']],
+  });
+  return {
+    data: rows,
+    pagging: {
+      page,
+      totalItemCount: count,
+      limit,
+    },
+  };
 }
 
 async function listHistory({ page, offset, limit, customer_id }) {
   const { rows, count } = await order.findAndCountAll({
     where: {
       customer_id,
-      status: ACTIVE.ACTIVE,
+      is_active: ACTIVE.ACTIVE,
     },
     include: [
       {

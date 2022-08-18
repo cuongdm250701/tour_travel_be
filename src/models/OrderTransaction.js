@@ -18,7 +18,7 @@ order_transaction.init(
       allowNull: false,
     },
     response_from_admin: {
-      type: Sequelize.INTEGER,
+      type: Sequelize.TEXT,
     },
     df_order_transaction_tupe_id: {
       type: Sequelize.INTEGER,

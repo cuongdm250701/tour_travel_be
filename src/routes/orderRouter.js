@@ -15,7 +15,7 @@ router
     ResponeCreateOrUpdate(orderController.create)
   )
   .put(
-    '/update-order/:id',
+    '/update-order',
     authen.isAuthenticated,
     [middleware.authorizeMiddleware([ROLE.ADMIN])],
     ResponeCreateOrUpdate(orderController.update)
@@ -23,7 +23,7 @@ router
   .get(
     '/list-order',
     authen.isAuthenticated,
-    [middleware.authorizeMiddleware([ROLE.ADMIN])],
+    [middleware.authorizeMiddleware([ROLE.ADMIN]), middleware.pagingMiddleware()],
     ResponeGet(orderController.list)
   )
   .get(

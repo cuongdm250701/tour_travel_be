@@ -39,12 +39,11 @@ async function create(req, res) {
 async function update(req, res) {
   const { auth } = req;
   const { sale_id } = auth.id;
-  const { price, status, response = '' } = req.body;
-  const { id } = req.params;
-  if (!price) {
-    throw apiCode.INVALID_PARAM.errorInvalidParam('price');
-  }
-  return orderServer.update({ sale_id, price, status, response, id });
+  const { status, response = '', id } = req.body;
+  // if (!price) {
+  //   throw apiCode.INVALID_PARAM.errorInvalidParam('price');
+  // }
+  return orderServer.update({ sale_id, status, response, id });
 }
 
 async function list(req, res) {
