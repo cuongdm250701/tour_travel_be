@@ -73,9 +73,16 @@ async function list({ search, page, offset, limit, service_category_id }) {
         model: service_category,
         attributes: [],
       },
+      {
+        model: service_image,
+        attributes: [],
+      },
     ],
     attributes: {
-      include: [[col('service_category.name'), 'category_name']],
+      include: [
+        [col('service_category.name'), 'category_name'],
+        [col('service_images.path'), 'path'],
+      ],
     },
     limit,
     offset,
